@@ -1,0 +1,38 @@
+label {
+    margin-top: 1rem;
+    font-weight: lighter;
+    font-size: medium;
+    font-family: arial, helvetica, sans-serif;
+    display: block;
+}
+
+::placeholder {
+    font-size: smaller;
+    color: firebrick;
+}
+
+input {
+    font-size: 1em;
+    display: block;
+    margin: 0.25rem auto;
+}
+
+button {
+    margin-top: 3rem;
+}
+
+.form-field{
+    text-align: left;
+    margin-left: 0.25rem;
+    margin-right: 20px;
+}
+
+#account-form {
+    text-align: center;
+    margin: 3rem auto;
+    border: 2rem #BBBBBB;
+    width: fit-content;
+    position: relative;
+    height: fit-content;
+
+}

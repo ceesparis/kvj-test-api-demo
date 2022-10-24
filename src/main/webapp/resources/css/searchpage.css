@@ -1,0 +1,10 @@
+input {
+    font-family: arial, helvetica, sans-serif;
+    font-size: 1em;
+    margin-top: 1rem;
+    margin-left: 1rem;
+    border: 1px solid #BBBBBB;
+    border-radius: 3px 3px 3px 3px;
+    box-shadow: 3px 3px 4px #EEEEEE inset;
+    padding: 5px 2% 5px 0.5rem;
+}
