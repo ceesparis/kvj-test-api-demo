@@ -5,6 +5,7 @@ import com.example.kvkpliegerdemo3.form.SearchInputForm;
 import com.example.kvkpliegerdemo3.model.KvkCompany;
 import com.example.kvkpliegerdemo3.service.SearchService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.apache.logging.log4j.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -62,14 +63,13 @@ public class SearchController {
 
             try {
                 String json = searchService.convertResponseMapToJson(response);
-                request.getSession().setAttribute("json", json);
+                redirectAttributes.addFlashAttribute("json", json);
             } catch (JsonProcessingException jsonProcessingException) {
                 LOG.error("Response could not be converted back to JSON");
             }
 
             List<KvkCompany>  companies = searchService.convertResultsMapToCompanies((ArrayList<Map<String, String>>) response.get("resultaten"));
-            request.getSession().setAttribute("request", url);
-            request.getSession().setAttribute("results", companies);
+            redirectAttributes.addFlashAttribute("request", url);
             redirectAttributes.addFlashAttribute("results", companies);
         } catch (HttpClientErrorException httpClientErrorException) {
             String errorMessage = "No companies were found! Your search term was \'" + searchInput + "\'.";
@@ -105,5 +105,6 @@ public class SearchController {
     public String viewRegistry(HttpServletRequest request){
         return "registrypage";
     }
+
 
 }

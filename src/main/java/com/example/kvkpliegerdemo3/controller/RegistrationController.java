@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
+
 import javax.servlet.http.HttpServletRequest;
 
 
@@ -23,8 +25,8 @@ public class RegistrationController {
     }
 
     @PostMapping(value="/register")
-    protected String register(@ModelAttribute("RegistrationForm") RegistrationForm form, HttpServletRequest request,
-                              RedirectAttributes redirectAttributes){
+    protected RedirectView register(@ModelAttribute("RegistrationForm") RegistrationForm form, HttpServletRequest request,
+                                    RedirectAttributes redirectAttributes){
 
         String email = form.getEmail();
         String password = form.getPassword();
@@ -44,7 +46,7 @@ public class RegistrationController {
         }
 
         if (!(passwordIsThere && emailIsThere)){
-            return "redirect:" + request.getHeader("referer");
+            return new RedirectView("register", true);
         }
 
         Account account = new Account();
@@ -54,7 +56,13 @@ public class RegistrationController {
         account.setKvkNumber(form.getKvkNumber());
         account.setLocation(form.getLocation());
 
+        request.getSession().setAttribute("form", null);
         request.getSession().setAttribute("account", account);
+        return new RedirectView("landingpage", true);
+    }
+
+    @GetMapping("landingpage")
+    protected String landingPage(){
         return "landingpage";
     }
 }
