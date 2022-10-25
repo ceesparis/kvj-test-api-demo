@@ -5,7 +5,6 @@ import com.example.kvkpliegerdemo3.form.SearchInputForm;
 import com.example.kvkpliegerdemo3.model.KvkCompany;
 import com.example.kvkpliegerdemo3.service.SearchService;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.apache.logging.log4j.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -30,9 +29,9 @@ public class SearchController {
     @Resource
     private SearchService searchService;
 
-    @PostMapping(value="/search")
+    @PostMapping(value = "/search")
     protected RedirectView getSearchInput(@ModelAttribute("SearchInputForm") SearchInputForm form,
-              RedirectAttributes redirectAttributes) {
+                                          RedirectAttributes redirectAttributes) {
         String searchInput = form.getSearchInput();
         redirectAttributes.addFlashAttribute("searchInput", searchInput);
         redirectAttributes.addFlashAttribute("typeOfSearch", searchService.findTypeOfSearch(searchInput));
@@ -40,13 +39,13 @@ public class SearchController {
         return new RedirectView("/search/input", true);
     }
 
-    @GetMapping(value="/search/input")
+    @GetMapping(value = "/search/input")
     @SuppressWarnings("unchecked")
     protected String search(@ModelAttribute("SearchInputForm") SearchInputForm form, HttpServletRequest request,
-                                    RedirectAttributes redirectAttributes){
+                            RedirectAttributes redirectAttributes) {
         Map<String, ?> inputFlashMap = RequestContextUtils.getInputFlashMap(request);
 
-        if (inputFlashMap ==  null) {
+        if (inputFlashMap == null) {
             String errorMessage = "Something went wrong on our end, and we lost your search query. Please try again!";
             redirectAttributes.addFlashAttribute("errorMessage", errorMessage);
 
@@ -61,42 +60,47 @@ public class SearchController {
             Map<String, ?> response = restTemplate.getForObject(url, HashMap.class);
 
             try {
-                String json = searchService.convertResponseMapToJson(response);
-                redirectAttributes.addFlashAttribute("json", json);
+                redirectAttributes.addFlashAttribute("json", searchService.convertResponseMapToJson(response));
             } catch (JsonProcessingException jsonProcessingException) {
                 LOG.error("Response could not be converted back to JSON");
             }
 
-            List<KvkCompany>  companies = searchService.convertResultsMapToCompanies((ArrayList<Map<String, String>>) response.get("resultaten"));
+            ArrayList<Map<String, String>> results = (ArrayList<Map<String, String>>) response.get("resultaten");
+            List<KvkCompany> companies = searchService.convertResultsMapToCompanies((results));
             redirectAttributes.addFlashAttribute("request", url);
             redirectAttributes.addFlashAttribute("results", companies);
-        } catch (HttpClientErrorException httpClientErrorException) {
-            String errorMessage = "No companies were found! Your search term was \'" + searchInput + "\'.";
+        } catch (HttpClientErrorException | HttpServerErrorException exception) {
+            String errorMessage;
+
+            if (exception instanceof HttpClientErrorException) {
+                errorMessage = "No companies were found! Your search term was \'" + searchInput + "\'.";
+            } else {
+                errorMessage = "The search failed. An error occurred on the server side. Please try again later.";
+            }
+
             request.getSession().invalidate();
             redirectAttributes.addFlashAttribute("errorMessage", errorMessage);
-            LOG.error(errorMessage, httpClientErrorException);
-        } catch (HttpServerErrorException httpServerErrorException) {
-            String errorMessage = "The search failed. An error occurred on the server side. Please try again later.";
-            request.getSession().invalidate();
-            redirectAttributes.addFlashAttribute("errorMessage", errorMessage);
-            LOG.error(errorMessage, httpServerErrorException);
+            LOG.error(errorMessage, exception);
         }
+
         return "redirect:" + request.getHeader("referer");
     }
 
-    @PostMapping(value="/select-company")
-    protected RedirectView selectCompany(HttpServletRequest request, RedirectAttributes redirectAttributes,
-                                   @ModelAttribute("RegistrationForm") RegistrationForm form) {
+    @PostMapping(value = "/select-company")
+    protected RedirectView selectCompany(RedirectAttributes redirectAttributes,
+                                         @ModelAttribute("RegistrationForm") RegistrationForm form) {
         redirectAttributes.addFlashAttribute("form", form);
 
         return new RedirectView("register", true);
     }
 
     @GetMapping("/")
-    public String viewSearchPage(HttpServletRequest request) { return "searchpage"; }
+    public String viewSearchPage() {
+        return "searchpage";
+    }
 
     @GetMapping("/select-company")
-    public String viewRegistry(HttpServletRequest request){
+    public String viewRegistry() {
         return "registrypage";
     }
 
