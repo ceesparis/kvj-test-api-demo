@@ -4,12 +4,9 @@ import com.example.kvkpliegerdemo3.model.KvkCompany;
 import com.example.kvkpliegerdemo3.service.SearchService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -17,7 +14,6 @@ import java.util.stream.Collectors;
 @Service
 public class DefaultSearchService implements SearchService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(DefaultSearchService.class);
     @Override
     public String findTypeOfSearch(String searchInput) {
         return searchInput.matches("[0-9]+") ? "kvkNummer" : "handelsnaam";
