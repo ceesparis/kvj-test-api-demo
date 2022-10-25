@@ -17,7 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 @Controller("RegistrationController")
 public class RegistrationController {
 
-    private static final Logger LOG = LoggerFactory.getLogger(RegistrationController.class);
 
     @GetMapping(value="/register")
     protected String registryPage(@ModelAttribute("RegistrationForm") RegistrationForm form, HttpServletRequest request) {
@@ -31,7 +30,7 @@ public class RegistrationController {
         String email = form.getEmail();
         String password = form.getPassword();
 
-        // make data subsist across page refreshing
+        // make entered password/email subsist across page refreshing
         request.getSession().setAttribute("form", form);
 
         boolean passwordIsThere = !(password == null || password.isEmpty());

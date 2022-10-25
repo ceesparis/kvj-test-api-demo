@@ -10,32 +10,24 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
+    <script type="text/javascript" src="../../resources/javascript/checkSubmitButton.js"></script>
+    <script type="text/javascript" src="../../resources/javascript/formatJson.js"></script>
     <link rel="stylesheet" href="../../resources/css/index.css" type="text/css">
     <link rel="stylesheet" href="../../resources/css/searchpage.css" type="text/css">
     <title>Find Company</title>
 </head>
 <body>
     <h1>Find Your Company</h1>
-    <script>
-        function success() {
-            if (document.getElementById("search-input").value === "") {
-                document.getElementById('search-button').disabled = true;
-            } else {
-                document.getElementById('search-button').disabled = false;
-            }
-        }
-    </script>
     <%--@elvariable id="SearchInputForm" type="com.example.kvkpliegerdemo3.form.SearchInputForm"--%>
     <form:form action="search" method="post" modelAttribute="SearchInputForm">
-<%--        <button disabled>click</button>--%>
         <div>
             <label id="search-bar-label">Enter KVK number or Company Name</label>
-            <input id="search-input" name="searchInput" value="${SearchInputForm.searchInput}" onkeyup="success()"/>
+            <input id="search-input" name="searchInput" value="${SearchInputForm.searchInput}" onkeyup="checkSubmitButton()"/>
             <button id="search-button" type="submit">search</button>
             <p class="error-message">${errorMessage}</p>
         </div>
         <script>
-            success();
+            checkSubmitButton();
         </script>
     </form:form>
     <c:set var="resultPresent" value="${json != null}"/>
@@ -47,25 +39,7 @@
             <div id="json-card-response">
             </div>
             <script>
-                let json = JSON.stringify(${json}, null, 4);
-                json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-                json = json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match)
-                {
-                    var cls = 'number';
-                    if (/^"/.test(match)) {
-                        if (/:$/.test(match)) {
-                            cls = 'key';
-                        } else {
-                            cls = 'string';
-                        }
-                    } else if (/true|false/.test(match)) {
-                        cls = 'boolean';
-                    } else if (/null/.test(match)) {
-                        cls = 'null';
-                    }
-                    return '<span class="' + cls + '">' + match + '</span>';
-                });
-                document.getElementById('json-card-response').innerHTML = json;
+                formatJson(${json})
             </script>
         </div>
     </c:if>

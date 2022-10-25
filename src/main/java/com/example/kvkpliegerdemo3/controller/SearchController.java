@@ -27,7 +27,6 @@ public class SearchController {
     private static final Logger LOG = LoggerFactory.getLogger(SearchController.class);
     @Resource
     private RestTemplate restTemplate;
-
     @Resource
     private SearchService searchService;
 
@@ -89,22 +88,16 @@ public class SearchController {
     protected RedirectView selectCompany(HttpServletRequest request, RedirectAttributes redirectAttributes,
                                    @ModelAttribute("RegistrationForm") RegistrationForm form) {
         redirectAttributes.addFlashAttribute("form", form);
+
         return new RedirectView("register", true);
     }
 
-
     @GetMapping("/")
-    public String viewIndex(HttpServletRequest request){
-        request.setAttribute("enabled", false);
-        return "searchpage";
-    }
-
-
+    public String viewSearchPage(HttpServletRequest request) { return "searchpage"; }
 
     @GetMapping("/select-company")
     public String viewRegistry(HttpServletRequest request){
         return "registrypage";
     }
-
 
 }
