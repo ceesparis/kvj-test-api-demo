@@ -20,8 +20,13 @@ public class DefaultSearchService implements SearchService {
     }
 
     @Override
-    public String createRequest(String searchInput, String typeOfSearch) {
+    public String createSearchRequest(String searchInput, String typeOfSearch) {
         return "https://developers.kvk.nl/test/api/v1/zoeken?" + typeOfSearch + "=" + searchInput + "&pagina=1&aantal=50";
+    }
+
+    @Override
+    public String createBasicProfileRequest(String kvkNumber) {
+        return "https://developers.kvk.nl/test/api/v1/basisprofielen/" + kvkNumber + "?geoData=false";
     }
 
     @Override

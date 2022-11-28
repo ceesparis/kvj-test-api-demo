@@ -27,12 +27,23 @@ button {
     margin-right: 20px;
 }
 
+.card {
+    display: inline-block;
+    /*vertical-align: middle;*/
+}
+
 #account-form {
     text-align: center;
-    margin: 3rem auto;
+    /*margin: 3rem auto;*/
+    margin: 3rem;
+    margin-left: 6rem;
     border: 2rem #BBBBBB;
     width: fit-content;
     position: relative;
     height: fit-content;
 
+}
+
+div{
+    /*display: inline-block;*/
 }

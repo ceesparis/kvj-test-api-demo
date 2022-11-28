@@ -1,5 +1,7 @@
 <%@ page import="com.example.kvkpliegerdemo3.form.RegistrationForm" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <%--
   Created by IntelliJ IDEA.
   User: cees
@@ -13,10 +15,25 @@
     <title>Create Account</title>
     <link rel="stylesheet" href="../../resources/css/registrypage.css" type="text/css">
     <link rel="stylesheet" href="../../resources/css/index.css" type="text/css">
+    <script type="text/javascript" src="../../resources/javascript/formatJson.js"></script>
 </head>
 <body>
 <h1>Register Your Company</h1>
+<div>
 <%--@elvariable id="RegistrationForm" type="com.example.kvkpliegerdemo3.form.RegistrationForm"--%>
+    <c:set var="resultPresent" value="${json != null}"/>
+    <c:if test="${resultPresent}">
+        <div class="card" id='json-card'>
+            <h4 class="json-request">Request:</h4>
+            <p class="json-request" id="json-request-url">${request}</p>
+            <h4>Response:</h4>
+            <div id="json-card-response">
+            </div>
+            <script>
+                formatJson(${json})
+            </script>
+        </div>
+    </c:if>
 <form:form action="register" method="post" modelAttribute="RegistrationForm">
     <div id="account-form" class="card">
         <div class="form-field">
@@ -42,5 +59,6 @@
         <button type="submit">create new account</button>
     </div>
 </form:form>
+</div>
 </body>
 </html>

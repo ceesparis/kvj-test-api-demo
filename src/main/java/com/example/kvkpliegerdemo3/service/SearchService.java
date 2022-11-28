@@ -10,7 +10,9 @@ import java.util.Map;
 public interface SearchService {
     String findTypeOfSearch(String searchInput);
 
-    String createRequest(String searchInput, String typeOfSearch);
+    String createSearchRequest(String searchInput, String typeOfSearch);
+
+    String createBasicProfileRequest(String kvkNumber);
 
     List<KvkCompany> convertResultsMapToCompanies(ArrayList<Map<String, String>> results);
 

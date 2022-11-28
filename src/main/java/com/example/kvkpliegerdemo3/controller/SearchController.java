@@ -54,7 +54,7 @@ public class SearchController {
 
         String searchInput = (String) inputFlashMap.get("searchInput");
         String typeOfSearch = (String) inputFlashMap.get("typeOfSearch");
-        String url = searchService.createRequest(searchInput, typeOfSearch);
+        String url = searchService.createSearchRequest(searchInput, typeOfSearch);
 
         try {
             Map<String, ?> response = restTemplate.getForObject(url, HashMap.class);
@@ -89,6 +89,25 @@ public class SearchController {
     @PostMapping(value = "/select-company")
     protected RedirectView selectCompany(RedirectAttributes redirectAttributes,
                                          @ModelAttribute("RegistrationForm") RegistrationForm form) {
+        // make another api call here and add this to next page via flashAttribute
+        String url = searchService.createBasicProfileRequest(form.getKvkNumber());
+
+        try {
+            Map<String, ?> response = restTemplate.getForObject(url, HashMap.class);
+
+            try {
+                redirectAttributes.addFlashAttribute("request", url);
+                redirectAttributes.addFlashAttribute("json", searchService.convertResponseMapToJson(response));
+            } catch (JsonProcessingException jsonProcessingException) {
+                LOG.error("Response could not be converted back to JSON");
+            }
+
+        } catch (HttpClientErrorException | HttpServerErrorException exception) {
+            String errorMessage = "Getting basic profile for this company failed. request url was "+ url;
+            redirectAttributes.addFlashAttribute("errorMessage", errorMessage);
+            LOG.error(errorMessage, exception);
+        }
+
         redirectAttributes.addFlashAttribute("form", form);
 
         return new RedirectView("register", true);
